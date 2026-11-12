@@ -2,8 +2,10 @@ const express = require("express");
 const cors = require("cors");
 
 //const { bdmysql } = require('../database/MariaDbConnection');
-const { bdmysql, bdmysqlNube } = require("../database/mySqlConnection");
+const { bdmysqlNube } = require("../database/mySqlConnection");
+
 const { dbConnectionMongo } = require("../database/mongoConnection");
+
 const { dbConnectionNeo4j } = require("../database/neo4jConnection");
 
 class Server {
@@ -11,7 +13,6 @@ class Server {
     this.app = express();
     this.port = process.env.PORT;
 
-    //Rutas para MySQL
     this.pathsMySql = {
       auth: "/api/auth",
       prueba: "/api/prueba",
@@ -19,28 +20,31 @@ class Server {
       //Aqui defino el path de la Ruta de Heroes
       heroes: "/api/heroes",
 
-      //Aqui defino el path de la Ruta de Usuarios
+      //defino la ruta de usuarios
       usuarios: "/api/usuarios",
     };
 
-    //Defino un arreglo de paths solo para MONGO
     this.pathsMyMongo = {
       //PATH heroes
       heroes: "/api/heroesm",
     };
 
+    this.pathsNeo = {
+      //Ajusto la url para la outorizacion por login
+      personas: "/api/personas",
+    };
+
     this.app.get("/", function (req, res) {
-      res.send("Hola Mundo a todos... DESDE LA CLASE SERVER");
+      res.send("Hola Mundo a todos...DESDE LA CLASE");
     });
 
     //Aqui me conecto a la BD
-    //this.dbConnectionNube();
-    //this.dbConnectionLocal();
+    //this.dbConnection();
 
-    //Aqui me conecto a la BD Mongo
+    //Aqui me conecto a la BD de Mongo
     //this.conectarBDMongo();
 
-    //Aqui me conecto a la BD Neo4j
+    //Aqui me conecto a la Neo4j
     this.conectarBDNeo4j();
 
     //Middlewares
@@ -50,26 +54,17 @@ class Server {
     this.routes();
   }
 
-  async dbConnectionNube() {
-    try {
-      await bdmysqlNube.authenticate();
-      console.log("Connection OK a MySQL NUBE.");
-    } catch (error) {
-      console.error("No se pudo Conectar a la BD MySQL NUBE", error);
-    }
-  }
-
-  async dbConnectionLocal() {
-    try {
-      await bdmysql.authenticate();
-      console.log("Connection OK a MySQL LOCAL.");
-    } catch (error) {
-      console.error("No se pudo Conectar a la BD MySQL LOCAL", error);
-    }
-  }
-
   async conectarBDMongo() {
     await dbConnectionMongo();
+  }
+
+  async dbConnection() {
+    try {
+      await bdmysqlNube.authenticate();
+      console.log("Connection OK a MySQL en la NUBE.");
+    } catch (error) {
+      console.error("No se pudo Conectar a la BD MySQL", error);
+    }
   }
 
   async conectarBDNeo4j() {
@@ -79,12 +74,19 @@ class Server {
   routes() {
     //this.app.use(this.pathsMySql.auth, require('../routes/MySqlAuth'));
     //this.app.use(this.pathsMySql.prueba, require('../routes/prueba'));
-    //HEROES
+
+    //Aqui activo el enrutamiento de los Heroes tomando en cuenta el path y el Router
     //this.app.use(this.pathsMySql.heroes, require('../routes/heroes.route'));
-    //USUARIOS
+
+    //Aqui activo el enrutamiento de los Usuarios tomando en cuenta el path y el Router
     //this.app.use(this.pathsMySql.usuarios, require('../routes/usuarios.route'));
+
     //MONGO
+    //Aqui activo el enrutamiento de los Heroes de Mongo tomando en cuenta el path y el Router
     //this.app.use(this.pathsMyMongo.heroes, require('../routes/heroes.mongo.route'));
+
+    //NEO
+    this.app.use(this.pathsNeo.personas, require("../routes/personaNeo.route"));
   }
 
   middlewares() {
