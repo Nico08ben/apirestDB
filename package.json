@@ -1,0 +1,31 @@
+{
+  "name": "apirest_uao_202602",
+  "version": "1.0.0",
+  "description": "API REST académica con persistencia en MySQL y MongoDB",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "iniciar": "node app.js"
+  },
+  "keywords": ["api", "express", "mysql", "mongodb"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.0",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "mariadb": "^3.5.4",
+    "mongoose": "^9.11.3",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.24.4",
+    "neo4j-driver": "^6.3.0",
+    "nodemon": "^3.1.14",
+    "sequelize": "^6.37.8"
+  }
+}
